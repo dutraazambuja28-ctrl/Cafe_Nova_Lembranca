@@ -23,7 +23,7 @@ class CafeNListView(ListView):
     paginate_by = 10
 
 
-class CafeNListView(ListView):
+class CafeNLListView(ListView):
     model = Pedido
     template_name = "CafeNL/CafeNL_list.html"
     context_object_name = "CafeNL"
