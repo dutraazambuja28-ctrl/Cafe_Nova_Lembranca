@@ -11,7 +11,7 @@ class MesaAdmin(admin.ModelAdmin):
     search_fields = ("name",)
  
  
-class ItemPedidoAdmin(admin.TabularInline):
+class ItemPedidoInline(admin.TabularInline):
     model = ItemPedido
     extra = 1
     autocomplete_fields = ("product",)
@@ -44,7 +44,7 @@ class PedidoAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "created_at"
     readonly_fields = ("created_at", "total_display")
-    inlines = [ItemPedidoAdmin]
+    inlines = [ItemPedidoInline]
     actions = ["marcar_em_preparo", "marcar_pronto", "marcar_entregue"]
  
     def get_queryset(self, request):
@@ -72,6 +72,5 @@ class PedidoAdmin(admin.ModelAdmin):
  
 admin.site.register(ItemMenu, ItemMenuAdmin)
 admin.site.register(Mesa, MesaAdmin)
-admin.site.register(ItemPedido, ItemPedidoAdmin)
 admin.site.register(Pedido, PedidoAdmin)
  
