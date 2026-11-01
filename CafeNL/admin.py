@@ -1,22 +1,28 @@
 from django.contrib import admin
 from CafeNL.models import ItemMenu, Mesa, Pedido, ItemPedido
-
+ 
+ 
 class ItemMenuAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "last_name", "email", "phone")
-    search_fields = ("first_name", "last_name", "email")
+    list_display = ("nome", "categoria", "preco")
+    list_filter = ("categoria",)
+    list_editable = ("preco",)
+    # Necessário para o autocomplete_fields do ItemPedidoInline funcionar
+    search_fields = ("nome",)
  
  
 class MesaAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
+    list_display = ("numero", "capacidade", "status")
+    list_filter = ("status",)
+    list_editable = ("status",)
+    ordering = ("numero",)
  
  
 class ItemPedidoInline(admin.TabularInline):
     model = ItemPedido
     extra = 1
-    autocomplete_fields = ("product",)
-    readonly_fields = ("unit_price", "subtotal_display")
-    fields = ("product", "quantity", "unit_price", "subtotal_display")
+    autocomplete_fields = ("produto",)
+    readonly_fields = ("subtotal_display",)
+    fields = ("produto", "quantidade", "subtotal_display")
  
     @admin.display(description="Subtotal (R$)")
     def subtotal_display(self, obj):
@@ -26,15 +32,9 @@ class ItemPedidoInline(admin.TabularInline):
  
  
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "customer",
-        "status",
-        "payment_method",
-        "total_display",
-        "created_at",
-    )
+    list_display = ("id", "mesa", "status", "total_display", "horario_criacao")
     list_editable = ("status",)
+<<<<<<< HEAD
     list_filter = ("status", "payment_method", "created_at")
     list_select_related = ("customer",)
     search_fields = (
@@ -46,10 +46,20 @@ class PedidoAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "total_display")
     inlines = [ItemPedidoInline]
     actions = ["marcar_em_preparo", "marcar_pronto", "marcar_entregue"]
+=======
+    list_filter = ("status", "mesa", "horario_criacao")
+    list_select_related = ("mesa",)
+    search_fields = ("=mesa__numero",)
+    date_hierarchy = "horario_criacao"
+    readonly_fields = ("horario_criacao", "total_display")
+    inlines = [ItemPedidoInline]
+    actions = ["marcar_preparando", "marcar_entregue", "marcar_pago"]
+>>>>>>> bb908710579d3d5301bfe974536300e2f2259257
  
     def get_queryset(self, request):
-        # Busca os itens de todos os pedidos de uma vez, para o total
-        return super().get_queryset(request).prefetch_related("itens")
+        # Busca itens e produtos de todos os pedidos de uma vez,
+        # para o total não gerar várias consultas por linha da listagem.
+        return super().get_queryset(request).prefetch_related("itens__produto")
  
     @admin.display(description="Total (R$)")
     def total_display(self, obj):
@@ -57,20 +67,24 @@ class PedidoAdmin(admin.ModelAdmin):
             return "-"
         return f"{obj.total:.2f}"
  
-    @admin.action(description="Marcar como Em preparo")
-    def marcar_em_preparo(self, request, queryset):
-        queryset.update(status="A")
- 
-    @admin.action(description="Marcar como Pronto para retirada")
-    def marcar_pronto(self, request, queryset):
-        queryset.update(status="R")
+    @admin.action(description="Marcar como Preparando")
+    def marcar_preparando(self, request, queryset):
+        queryset.update(status=Pedido.Status.PREPARANDO)
  
     @admin.action(description="Marcar como Entregue")
     def marcar_entregue(self, request, queryset):
-        queryset.update(status="E")
+        queryset.update(status=Pedido.Status.ENTREGUE)
+ 
+    @admin.action(description="Marcar como Pago")
+    def marcar_pago(self, request, queryset):
+        queryset.update(status=Pedido.Status.PAGO)
  
  
 admin.site.register(ItemMenu, ItemMenuAdmin)
 admin.site.register(Mesa, MesaAdmin)
+<<<<<<< HEAD
 admin.site.register(Pedido, PedidoAdmin)
  
+=======
+admin.site.register(Pedido, PedidoAdmin)
+>>>>>>> bb908710579d3d5301bfe974536300e2f2259257
