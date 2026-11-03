@@ -19,7 +19,6 @@ class MesaAdmin(admin.ModelAdmin):
 class ItemPedidoInline(admin.TabularInline):
     model = ItemPedido
     extra = 1
-    autocomplete_fields = ("produto",)
     readonly_fields = ("subtotal_display",)
     fields = ("produto", "quantidade", "subtotal_display")
 
@@ -61,6 +60,7 @@ class PedidoAdmin(admin.ModelAdmin):
     @admin.action(description="Marcar como Pago")
     def marcar_pago(self, request, queryset):
         queryset.update(status=Pedido.Status.PAGO)
+
 
 
 admin.site.register(ItemMenu, ItemMenuAdmin)
