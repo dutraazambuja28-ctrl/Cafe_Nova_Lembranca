@@ -3,10 +3,11 @@ from CafeNL.models import ItemMenu, Mesa, Pedido, ItemPedido
 
 
 class ItemMenuAdmin(admin.ModelAdmin):
-    list_display = ("nome", "categoria", "preco")
+    list_display = ("nome", "categoria", "preco", "imagem")
     list_filter = ("categoria",)
     list_editable = ("preco",)
     search_fields = ("nome",)
+    
 
 
 class MesaAdmin(admin.ModelAdmin):
