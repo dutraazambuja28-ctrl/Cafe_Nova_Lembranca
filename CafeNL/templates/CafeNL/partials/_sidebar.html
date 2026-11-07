@@ -3,6 +3,15 @@
         <li class="nav-item mb-2">
             <a href="{% url 'CafeNL:cardapio_list' %}" class="nav-link text-white fw-bold">Cardápio</a>
         </li>
+        <li class="nav-item mb-2">
+            <a href="{% url 'CafeNL:carrinho' %}" class="nav-link text-white fw-bold">Carrinho ({{ request.session.carrinho|length }})</a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="{% url 'CafeNL:pedidos' %}" class="nav-link text-white fw-bold">Pedidos</a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="{% url 'CafeNL:mesa_criar' %}" class="nav-link text-white fw-bold">Criar mesa</a>
+        </li>
         <li class="nav-item">
             <a href="{% url 'admin:index' %}" class="nav-link text-white-50">Painel Admin</a>
         </li>

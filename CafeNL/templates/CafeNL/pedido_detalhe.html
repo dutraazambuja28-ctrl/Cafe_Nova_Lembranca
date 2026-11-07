@@ -1,0 +1,28 @@
+{% extends "CafeNL/CafeNL_list.html" %}
+
+{% block title %}Pedido{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Pedido #{{ pedido.pk }}</h2>
+
+<p>{{ pedido.mesa }} - {{ pedido.get_status_display }} - {{ pedido.horario_criacao|date:"d/m/Y H:i" }}</p>
+
+<table class="table table-light">
+    <tr>
+        <th>Produto</th>
+        <th>Qtd</th>
+        <th>Subtotal</th>
+    </tr>
+    {% for item in pedido.itens.all %}
+    <tr>
+        <td>{{ item.produto.nome }}</td>
+        <td>{{ item.quantidade }}</td>
+        <td>R$ {{ item.subtotal }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h4>Total: R$ {{ pedido.total }}</h4>
+
+<a href="{% url 'CafeNL:cardapio_list' %}" style="color: #f8bdac;">voltar pro cardápio</a>
+{% endblock %}

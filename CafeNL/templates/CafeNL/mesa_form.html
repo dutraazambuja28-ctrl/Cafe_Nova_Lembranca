@@ -1,0 +1,13 @@
+{% extends "CafeNL/CafeNL_list.html" %}
+
+{% block title %}Nova mesa{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Cadastrar mesa</h2>
+
+<form method="post" style="max-width: 400px; margin: auto;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" style="color: #4a0c0c; background-color: rgb(233, 194, 149); border-color: #cf8f3c;">Salvar</button>
+</form>
+{% endblock %}

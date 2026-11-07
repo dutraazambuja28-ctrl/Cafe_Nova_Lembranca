@@ -1,0 +1,60 @@
+{% extends "CafeNL/CafeNL_list.html" %}
+
+{% block title %}Carrinho{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Carrinho</h2>
+
+{% if itens %}
+<table class="table table-light">
+    <tr>
+        <th>Produto</th>
+        <th>Preço</th>
+        <th>Qtd</th>
+        <th>Subtotal</th>
+    </tr>
+    {% for item in itens %}
+    <tr>
+        <td>{{ item.produto.nome }}</td>
+        <td>R$ {{ item.produto.preco }}</td>
+        <td>
+            <form action="{% url 'CafeNL:carrinho_remover' item.produto.pk %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-secondary">-</button>
+            </form>
+            {{ item.quantidade }}
+            <form action="{% url 'CafeNL:carrinho_adicionar' item.produto.pk %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-secondary">+</button>
+            </form>
+        </td>
+        <td>R$ {{ item.subtotal }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h4>Total: R$ {{ total }}</h4>
+
+<form action="{% url 'CafeNL:carrinho_limpar' %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger btn-sm mb-4">Limpar carrinho</button>
+</form>
+
+<form action="{% url 'CafeNL:carrinho_finalizar' %}" method="post">
+    {% csrf_token %}
+    Mesa:
+    <select name="mesa" required>
+        <option value="">---------</option>
+        {% for mesa in mesas %}
+        <option value="{{ mesa.pk }}" {% if mesa.pk == mesa_escolhida %}selected{% endif %}>Mesa {{ mesa.numero }} - {{ mesa.get_status_display }}</option>
+        {% endfor %}
+    </select>
+    <a href="{% url 'CafeNL:mesa_criar' %}" style="color: #f8bdac;">nova mesa</a>
+    <br><br>
+    <button class="btn btn-success">Finalizar pedido</button>
+</form>
+{% else %}
+<p class="text-center">Carrinho vazio</p>
+<p class="text-center"><a href="{% url 'CafeNL:cardapio_list' %}" style="color: #f8bdac;">voltar pro cardápio</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "CafeNL/CafeNL_list.html" %}
+
+{% block title %}Pedidos{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Pedidos</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for pedido in pedidos %}
+    <div class="col">
+        <div class="card h-100 text-dark bg-light">
+            <div class="card-header fw-bold" style="background-color: rgb(233, 194, 149);">
+                Pedido {{ pedido.mesa }}
+                <span class="badge bg-secondary float-end">{{ pedido.get_status_display }}</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for item in pedido.itens.all %}
+                    <li>{{ item.quantidade }}x {{ item.produto.nome }} - R$ {{ item.subtotal }}</li>
+                    {% endfor %}
+                </ul>
+                <h5>Total: R$ {{ pedido.total }}</h5>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <form action="{% url 'CafeNL:pedido_adicionar' pedido.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-success">Adicionar mais</button>
+                </form>
+                <form action="{% url 'CafeNL:pedido_fechar' pedido.pk %}" method="post" onsubmit="return confirm('Fechar a conta da {{ pedido.mesa }}?')">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger">Fechar conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center">Nenhum pedido aberto</p>
+    {% endfor %}
+</div>
+{% endblock %}

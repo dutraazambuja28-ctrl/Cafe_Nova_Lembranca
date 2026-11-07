@@ -1,5 +1,5 @@
 from django.db import models
-from django.db import models
+
 from decimal import Decimal
 
 class ItemMenu(models.Model):
@@ -11,22 +11,20 @@ class ItemMenu(models.Model):
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
     categoria = models.CharField(max_length=20, choices=Categoria.choices)
-    
-    # Campo adicionado para suportar o upload de imagens do cardápio
     imagem = models.ImageField(upload_to="cardapio/", blank=True, null=True)
 
     def __str__(self):
         return f"{self.nome} (R$ {self.preco:.2f})"
 
 class Mesa(models.Model):
-    # class Status(models.TextChoices):
-    #     LIVRE = "livre", "Livre"
-    #     OCUPADA = "ocupada", "Ocupada"
-    #     RESERVADA = "reservada", "Reservada"
-    #  CASO NECESSARIO ATIVO O CODIGO ACIMA 
+    class Status(models.TextChoices):
+        LIVRE = "livre", "Livre"
+        OCUPADA = "ocupada", "Ocupada"
+        RESERVADA = "reservada", "Reservada"
+
     numero = models.PositiveIntegerField(unique=True)
     capacidade = models.PositiveIntegerField()
-    status = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.LIVRE)
 
     def __str__(self):
         return f"Mesa {self.numero}"
@@ -47,7 +45,7 @@ class Pedido(models.Model):
         return f"Pedido #{self.id} - {self.mesa}"
 
     @property
-    def total(self): #Calculando o total da conta da mesa
+    def total(self):
         return sum(item.subtotal for item in self.itens.all())
 
     def fechar_conta(self, taxa_servico_percentual=Decimal("10")):
